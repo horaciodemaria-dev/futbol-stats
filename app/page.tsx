@@ -1,11 +1,17 @@
 import { getTodayFixtures } from "@/lib/api";
 import Link from "next/link";
+import { Suspense } from "react";
 import LanguageSelector from "@/components/LanguageSelector";
 import { getTranslation, Language } from "@/lib/translations";
 
-export default async function Home({ searchParams }: { searchParams: { lang?: string } }) {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string }>;
+}) {
   const fixtures = await getTodayFixtures();
-  const lang = (searchParams.lang as Language) || 'es';
+  const params = await searchParams;
+  const lang: Language = params.lang === 'en' ? 'en' : 'es';
   const t = (key: any) => getTranslation(lang, key);
 
   return (
@@ -16,7 +22,9 @@ export default async function Home({ searchParams }: { searchParams: { lang?: st
             ⚽ {t('todayMatches')}
           </h1>
           <div className="flex gap-4 items-center">
-            <LanguageSelector />
+            <Suspense fallback={null}>
+              <LanguageSelector />
+            </Suspense>
             <Link 
               href={`/dashboard?lang=${lang}`}
               className="px-6 py-3 bg-green-500/20 hover:bg-green-500/30 border border-green-500 text-green-400 rounded-lg font-semibold transition-all"
@@ -25,6 +33,39 @@ export default async function Home({ searchParams }: { searchParams: { lang?: st
             </Link>
           </div>
         </div>
+
+        <section className="mb-8" aria-labelledby="explore-stats-heading">
+          <h2 id="explore-stats-heading" className="mb-4 text-xl font-bold text-white">
+            {t('exploreStats')}
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Link
+              href={`/dashboard?lang=${lang}`}
+              className="group rounded-xl border border-green-500/30 bg-gradient-to-br from-green-500/15 to-slate-800/60 p-5 shadow-lg transition-all hover:-translate-y-1 hover:border-green-400 hover:shadow-green-500/20"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-3xl" aria-hidden="true">🏟️</span>
+                <span className="text-green-400 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+              </div>
+              <h3 className="mb-1 text-lg font-bold text-white">{t('teamStats')}</h3>
+              <p className="mb-4 text-sm text-gray-400">{t('teamStatsDescription')}</p>
+              <span className="text-sm font-semibold text-green-400">{t('viewStats')} →</span>
+            </Link>
+
+            <Link
+              href={`/players?lang=${lang}`}
+              className="group rounded-xl border border-blue-500/30 bg-gradient-to-br from-blue-500/15 to-slate-800/60 p-5 shadow-lg transition-all hover:-translate-y-1 hover:border-blue-400 hover:shadow-blue-500/20"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-3xl" aria-hidden="true">⭐</span>
+                <span className="text-blue-400 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+              </div>
+              <h3 className="mb-1 text-lg font-bold text-white">{t('playerStats')}</h3>
+              <p className="mb-4 text-sm text-gray-400">{t('playerStatsDescription')}</p>
+              <span className="text-sm font-semibold text-blue-400">{t('viewStats')} →</span>
+            </Link>
+          </div>
+        </section>
 
         {fixtures.length === 0 && (
           <p className="text-center text-gray-400 text-lg">{t('noMatches')}</p>

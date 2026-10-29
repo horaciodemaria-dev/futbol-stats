@@ -1,11 +1,27 @@
 import { getTeamStatistics } from "@/lib/api";
 import Link from "next/link";
+import { Suspense } from "react";
 import LanguageSelector from "@/components/LanguageSelector";
 import { getTranslation, Language } from "@/lib/translations";
 
-export default async function DashboardPage({ searchParams }: { searchParams: { lang?: string } }) {
-  const stats = await getTeamStatistics(33, 39, 2023);
-  const lang = (searchParams.lang as Language) || 'es';
+const featuredTeams = [
+  { id: 33, leagueId: 39, name: "Manchester United", shortName: "Man Utd", emoji: "🔴" },
+  { id: 50, leagueId: 39, name: "Manchester City", shortName: "Man City", emoji: "🔵" },
+  { id: 40, leagueId: 39, name: "Liverpool", shortName: "Liverpool", emoji: "🔴" },
+  { id: 541, leagueId: 140, name: "Real Madrid", shortName: "Real Madrid", emoji: "⚪" },
+  { id: 529, leagueId: 140, name: "Barcelona", shortName: "Barcelona", emoji: "🔵" },
+];
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string; team?: string }>;
+}) {
+  const params = await searchParams;
+  const selectedTeamId = Number(params.team);
+  const selectedTeam = featuredTeams.find((team) => team.id === selectedTeamId) || featuredTeams[0];
+  const stats = await getTeamStatistics(selectedTeam.id, selectedTeam.leagueId, 2023);
+  const lang: Language = params.lang === 'en' ? 'en' : 'es';
   const t = (key: any, params?: any) => getTranslation(lang, key, params);
 
   if (!stats) {
@@ -30,8 +46,36 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
           <Link href={`/?lang=${lang}`} className="text-green-400 hover:text-green-300 inline-block">
             ← {t('backToFixtures')}
           </Link>
-          <LanguageSelector />
+          <Suspense fallback={null}>
+            <LanguageSelector />
+          </Suspense>
         </div>
+
+        <section className="mb-6" aria-labelledby="choose-team-heading">
+          <div className="mb-4">
+            <h1 id="choose-team-heading" className="text-2xl font-bold text-white">{t('chooseTeam')}</h1>
+            <p className="text-gray-400">{t('chooseTeamDescription')}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+            {featuredTeams.map((teamOption) => {
+              const isSelected = teamOption.id === selectedTeam.id;
+              return (
+                <Link
+                  key={teamOption.id}
+                  href={`/dashboard?lang=${lang}&team=${teamOption.id}`}
+                  className={`rounded-xl border p-4 text-center transition-all hover:-translate-y-1 ${
+                    isSelected
+                      ? 'border-green-500 bg-green-500/20 shadow-lg shadow-green-500/10'
+                      : 'border-slate-700 bg-slate-800/50 hover:border-green-500/50'
+                  }`}
+                >
+                  <span className="mb-2 block text-2xl" aria-hidden="true">{teamOption.emoji}</span>
+                  <span className="block text-sm font-semibold text-white">{teamOption.shortName}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Header */}
         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 mb-6 shadow-lg">

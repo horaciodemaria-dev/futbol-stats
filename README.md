@@ -6,10 +6,10 @@ A Next.js app to follow football: today's fixtures, a team statistics dashboard 
 
 ## Features
 
-- **Today's fixtures** (home page): league, match status and score for every match played today.
-- **Team dashboard** (`/dashboard`): recent form, matches played, wins, draws and losses, goals scored and conceded with averages, clean sheets, failed-to-score games, biggest wins and losses, penalties, cards and most used formation. It currently shows one team, set in `app/dashboard/page.tsx` (team `33`, league `39`, season `2023`).
+- **Home page** (`/`): today's fixtures (league, match status and score) and two entry cards, one to team statistics and one to player statistics.
+- **Team dashboard** (`/dashboard`): choose one of 5 featured teams (Manchester United, Manchester City, Liverpool, Real Madrid, Barcelona) and see its 2023 season: recent form, matches played, wins, draws and losses, goals scored and conceded with averages, clean sheets, failed-to-score games, biggest wins and losses, penalties, cards and most used formation. The selected team is kept in the URL (`?team=<id>`). To add a team, add an entry to `featuredTeams` in `app/dashboard/page.tsx`.
 - **Players** (`/players`): a list of 12 featured players, each with a profile page (`/players/[id]`) and season statistics for 2023 or 2024.
-- **Spanish / English interface** on the fixtures and dashboard pages, chosen with the `lang` query parameter (default: Spanish). Translations live in `lib/translations.ts`. The player pages are in English only.
+- **Spanish / English interface** on the home page and the dashboard, chosen with the `lang` query parameter (default: Spanish, and any value other than `en` falls back to Spanish). Translations live in `lib/translations.ts`. The player pages are in English only.
 - **Server-side caching** with Next.js `revalidate`: fixtures 5 minutes, team and player statistics 1 hour, player profiles 24 hours. This keeps the number of API calls low.
 
 ## Getting started
@@ -48,8 +48,8 @@ The key is only read on the server (`lib/api.ts`) and is never sent to the brows
 
 ```
 app/
-  page.tsx            Today's fixtures
-  dashboard/          Team statistics dashboard
+  page.tsx            Home: today's fixtures and entry cards
+  dashboard/          Team statistics dashboard with team selector
   players/            Featured players list
   players/[id]/       Player profile and season statistics
 components/
@@ -66,5 +66,5 @@ The app can be deployed to [Vercel](https://vercel.com/). Add `API_FOOTBALL_KEY`
 ## Limitations
 
 - The free API-Football plan has a daily request limit and only gives access to some seasons, which is why player statistics are restricted to 2023 and 2024.
-- The dashboard is fixed to a single team and season.
+- The dashboard offers 5 teams and the 2023 season only.
 - No automated tests yet.

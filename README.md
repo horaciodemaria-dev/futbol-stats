@@ -4,6 +4,8 @@ A Next.js app to follow football: today's fixtures, a team statistics dashboard 
 
 **Stack:** Next.js 16 (App Router, server components) · React 19 · TypeScript · Tailwind CSS 4
 
+> **Note:** this is a personal learning project, built as a coding challenge. It is not actively maintained. It uses the free plan of API-Football, so some leagues, teams and seasons are not up to date and some data may be missing.
+
 ## Features
 
 - **Home page** (`/`): today's fixtures (league, match status and score) and two entry cards, one to team statistics and one to player statistics.
@@ -65,6 +67,6 @@ The app can be deployed to [Vercel](https://vercel.com/). Add `API_FOOTBALL_KEY`
 
 ## Limitations
 
-- The free API-Football plan has a daily request limit and only gives access to some seasons, which is why player statistics are restricted to 2023 and 2024.
+- The free API-Football plan has a daily request limit and only gives access to some seasons, which is why player statistics are restricted to 2023 and 2024. Data is not kept up to date and some leagues or teams may be missing.
 - The dashboard offers 5 teams and the 2023 season only.
 - No automated tests yet.

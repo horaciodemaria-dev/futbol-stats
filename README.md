@@ -4,7 +4,7 @@ A Next.js app to follow football: today's fixtures, a team statistics dashboard 
 
 **Stack:** Next.js 16 (App Router, server components) · React 19 · TypeScript · Tailwind CSS 4
 
-> **Note:** this is a personal learning project, built as a coding challenge. It is not actively maintained. It uses the free plan of API-Football, so some leagues, teams and seasons are not up to date and some data may be missing.
+> **Note:** this is a personal side project, built out of my interest in football and statistics. I wanted to understand how to get data from an API, filter it and present it visually, combining Next.js, React and TypeScript with Tailwind. It is not actively maintained. It uses the free plan of API-Football, so some leagues, teams and seasons are not up to date and some data may be missing.
 
 ## Features
 
